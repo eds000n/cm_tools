@@ -1,15 +1,20 @@
-# To download a video
+# Install 
+usual with pip
+
+`pip install -r requirements.txt`
+
+## To download a video
 works for youtube and facebook videos
 `yt-dlp <link>`
 
-# To extract audio
+## To extract audio
 `ffmpeg -i input.mp4 -q:a 0 -map a audio_output.mp3`
 
-# To split audio
+## To split audio
 Roughty an mp3 file takes 1MB per 1 minute of sound, OpenAI has a limit of 25MB, so we give a max of 15*60 seconds to be safe
 `ffmpeg -i audio_output.mp3 -f segment -segment_time 900 -c copy audio_output%03d.mp3`
 
-# To get the transcript
+## To get the transcript
 To run this, I'm assuming you have your OpenAI environment set. I prefer using environment variables like:
 ```
 export OPENAI_KEY='my_key'
