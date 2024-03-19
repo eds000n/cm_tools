@@ -5,7 +5,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-import ffmpeg
 from pydantic import BaseModel
 from pydub import AudioSegment
 from services import audio_to_text

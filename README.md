@@ -47,5 +47,6 @@ build it with
 `docker build --build-arg OPENAI_API_KEY -t arguedas_app .`
 
 then push it wherever you may need. Note that we're passing the `OPENAI_API_KEY` as a build argument and then passing it to the built image. This may not be secure, this is a temporary solution.
+See docker [docs](https://docs.docker.com/reference/dockerfile/#arg)
 
 `docker run -p 8000:8000 arguedas_app`
