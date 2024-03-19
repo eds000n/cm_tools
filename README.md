@@ -27,5 +27,25 @@ Then, you can run: `./transcript file1.mp3 file.mp3`
 be patient, it takes some time. The script will generate a set of transcripts, one json per mp3 input. 
 This will generate some costs, for a couple of files of 20M I got charged 0.15 USD. Be careful, always set a limit [here](https://platform.openai.com/account/billing/limits)
 
-# Process JSON
+## Process JSON
 use jq
+
+## To cut a video
+-ss indicates the start time and -t the duration
+`ffmpeg -i input.mp4 -ss 00:08:41 -t 00:00:39 -c:v copy -c:a copy clipped_output.mp4`
+
+
+# http usage
+uvicorn server:app --reload
+
+curl -X POST localhost:8000/transcribe -d '{"file":"SGVsbG8gV29ybGQh"}' -H "Content-Type: application/json"
+curl -v -X POST localhost:8000/transcribe -H "Content-Type: multipart/form-data" -H "accept: application/json" -F "audio_file=@test_audio.mp3"
+
+# docker
+This application is containerized in a Dockerfile
+build it with
+`docker build --build-arg OPENAI_API_KEY -t arguedas_app .`
+
+then push it wherever you may need. Note that we're passing the `OPENAI_API_KEY` as a build argument and then passing it to the built image. This may not be secure, this is a temporary solution.
+
+`docker run -p 8000:8000 arguedas_app`

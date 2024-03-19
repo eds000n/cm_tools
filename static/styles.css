@@ -1,0 +1,68 @@
+/* styles.css */
+
+/* Center the content vertically and horizontally */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Container for the form */
+.container {
+    width: 80%;
+    max-width: 600px; /* Optional: You can adjust the maximum width as needed */
+}
+
+/* Logo */
+.logo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Adjust the gap value as needed */
+}
+
+/* Form */
+form {
+    width: 100%;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Form label */
+form label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* File input */
+form input[type="file"] {
+    display: block;
+    margin-bottom: 20px;
+}
+
+/* Submit button */
+form input[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Loading message */
+#loading {
+    margin-top: 10px;
+    text-align: center;
+    font-style: italic;
+}
+

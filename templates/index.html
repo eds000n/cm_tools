@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="/static/styles.css">
+
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="logo">
+          <img src="/static/logo.png" alt="Logo">
+        </div>
+
+        <div>
+          <form id="audioForm" method="post" enctype="multipart/form-data" action="transcribe">
+            <input id="audioFile" type="file" name="audio_file" accept="audio/*"/>
+            <input type="submit" value="Enviar archivo">
+          </form>
+        </div>
+
+        <div>
+          <form id="recordForm" method="POST" action="/transcode_transcribe" enctype="multipart/form-data">
+            <div>
+              <button id="toggleRecording">Comenzar grabación</button>
+              <button id="playRecording" disabled>Play grabación</button>
+            </div>
+            <input type="file" id="audioRecordInput" name="audio_file" accept="audio/*" capture="microphone" style="display: none;">
+            <input type="submit" value="Enviar grabación" id="submitRecording" disabled>
+            <audio id="audioPlayer" controls style="display: none;" ></audio>
+          </form>
+        </div>
+
+        <div id="loading"></div>
+
+        <div>
+          <p id="transcriptResult"></p>
+        </div>
+      </div>
+    </div>
+
+
+    <script>
+      const audioForm = document.getElementById('audioForm');
+      const recordForm = document.getElementById('recordForm');
+      const toggleRecordingButton = document.getElementById('toggleRecording');
+      const playRecordingButton = document.getElementById('playRecording');
+      const submitRecordingButton = document.getElementById('submitRecording');
+      const audioPlayer = document.getElementById('audioPlayer');
+      const audioRecordInputInput = document.getElementById('audioRecordInput');
+
+      let mediaRecorder;
+      let audioChunks = [];
+      let recordedAudioBlob;
+
+      toggleRecordingButton.addEventListener('click', async () => {
+        event.preventDefault();
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+          toggleRecordingButton.textContent = 'Comenzar grabación';
+          playRecordingButton.disabled = false;
+          submitRecordingButton.disabled = false;
+        } else {
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+            mediaRecorder.ondataavailable = (event) => {
+              audioChunks.push(event.data);
+            };
+            mediaRecorder.onstop = () => {
+              recordedAudioBlob = new Blob(audioChunks, { type: 'audio/webm; codecs=opus' });
+              console.log('audio chunks length: ', audioChunks.length);
+              playRecordingButton.disabled = false;
+            };
+            mediaRecorder.start();
+            toggleRecordingButton.textContent = 'Parar grabación';
+            playRecordingButton.disabled = true;
+            submitRecordingButton.disabled = true;
+            audioChunks = [];
+          } catch (error) {
+            console.error('Error accessing microphone:', error);
+          }
+        }
+      });
+
+      playRecordingButton.addEventListener('click', () => {
+        event.preventDefault();
+        if (recordedAudioBlob) {
+          const audioURL = URL.createObjectURL(recordedAudioBlob);
+          audioPlayer.src = audioURL;
+          audioPlayer.style.display = 'block';
+          audioPlayer.play();
+        }
+      });
+
+      audioForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        document.getElementById("loading").innerText = "Cargando...";
+        const audioFile = document.getElementById('audioFile');
+
+        const formData = new FormData();
+        const files = audioFile.files;
+        formData.append('audio_file', files[0]);
+
+        triggerTranscribe(formData);
+      });
+
+      recordForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        if (recordedAudioBlob) {
+          const audioURL = URL.createObjectURL(recordedAudioBlob);
+          document.getElementById("loading").innerText = "Cargando...";
+
+          const formData = new FormData();
+          formData.append('audio_file', recordedAudioBlob, 'recoding.webm');
+
+          triggerTranscribe(formData);
+        }
+      });
+
+      function triggerTranscribe(formData){
+        fetch('/transcribe', {
+          method: 'POST',
+          body: formData
+        })
+          .then(response => {
+            if (response.ok) {
+              console.log('Upload successful!', response.body);
+            } else {
+              console.error('Upload failed:', response.status);
+            }
+            return response.json();
+          })
+          .then(data => {
+            const transcriptResult = document.getElementById('transcriptResult');
+            transcriptResult.textContent = data.transcript;
+            document.getElementById("loading").innerText = "";
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      }
+
+    </script>
+  </body>
+</html>
