@@ -121,26 +121,31 @@
       });
 
       function triggerTranscribe(formData){
+        const headers = new Headers();
+        const token = localStorage.getItem('token');
+        headers.append('Authorization', `Bearer {token}`);
+
         fetch('/transcribe', {
           method: 'POST',
+          headers: headers,
           body: formData
         })
-          .then(response => {
-            if (response.ok) {
-              console.log('Upload successful!', response.body);
-            } else {
-              console.error('Upload failed:', response.status);
-            }
-            return response.json();
-          })
-          .then(data => {
-            const transcriptResult = document.getElementById('transcriptResult');
-            transcriptResult.textContent = data.transcript;
-            document.getElementById("loading").innerText = "";
-          })
-          .catch(error => {
-            console.error('Error:', error);
-          });
+        .then(response => {
+          if (response.ok) {
+            console.log('Upload successful!', response.body);
+          } else {
+            console.error('Upload failed:', response.status);
+          }
+          return response.json();
+        })
+        .then(data => {
+          const transcriptResult = document.getElementById('transcriptResult');
+          transcriptResult.textContent = data.transcript;
+          document.getElementById("loading").innerText = "";
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
       }
 
     </script>

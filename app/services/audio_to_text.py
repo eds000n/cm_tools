@@ -5,7 +5,7 @@ import logging
 import hashlib
 
 from openai import OpenAI
-from db import transcript_repo
+from app.db import transcript_repo
 
 def audio_to_text(file_name, audio_stream):
     """

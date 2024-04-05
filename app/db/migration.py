@@ -8,7 +8,7 @@ def migrate():
     cursor = conn.cursor()
 
     # Define SQL statement to create a table
-    create_table_sql = '''
+    create_transcripts_table_sql = '''
         CREATE TABLE IF NOT EXISTS transcripts (
             id INTEGER PRIMARY KEY,
             file_name TEXT NOT NULL,
@@ -19,7 +19,19 @@ def migrate():
     '''
 
     # Execute the SQL statement to create the table
-    cursor.execute(create_table_sql)
+    cursor.execute(create_transcripts_table_sql)
+
+    create_users_table_sql = '''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY,
+            username TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL,
+            created_at DATETIME,
+            approved INTEGER DEFAULT 0
+        )
+    '''
+
+    cursor.execute(create_users_table_sql)
 
     # Commit the transaction (save changes)
     conn.commit()

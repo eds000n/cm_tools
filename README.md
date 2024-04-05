@@ -50,3 +50,19 @@ then push it wherever you may need. Note that we're passing the `OPENAI_API_KEY`
 See docker [docs](https://docs.docker.com/reference/dockerfile/#arg)
 
 `docker run -p 8000:8000 arguedas_app`
+
+# Tests
+There's no single test, if this project is to evolve, tests are the next thing to be added together with some linter/style checker
+
+export ADMIN_USERNAME=admin
+export ADMIN_PWD=admin
+export SECRET_KEY=132kabcj34
+export SALT=324m923x
+
+docker build --build-arg OPENAI_API_KEY --build-arg ADMIN_USERNAME --build-arg=ADMIN_PWD --build-arg SALT --build-arg SECRET_KEY -t arguedas_app .
+
+curl -X POST http://localhost:8000/login  -d username=admin -d password=admin
+curl -H "Authorization: Bearer <admin_token>" -X PUT http://localhost:8000/admin/approve/user1
+curl -H "Authorization: Bearer <admin_token>" -X PUT http://localhost:8000/admin/reject/user1
+
+uvicorn app.server:app --reload
