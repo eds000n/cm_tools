@@ -24,6 +24,7 @@ app.add_middleware(
         )
 
 # Include routers
+# TODO: missing tests for admin and authentication routers, missing a couple of pieces here and there
 #app.include_router(admin.router)
 #app.include_router(authentication.router)
 app.include_router(transcribe.router)

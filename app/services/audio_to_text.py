@@ -23,15 +23,10 @@ def audio_to_text(file_name, audio_stream):
     if not found:
         logger.info("transcript not found, calling whisper model")
         transcript = client.audio.transcriptions.create(model="whisper-1", file=audio_stream)
-        #json_str = json.dumps(transcript.text, ensure_ascii=False)
-        #transcript_repo.insert(file_name, json_str, audio_hash)
         transcript_repo.insert(file_name, transcript.text, audio_hash)
-        #return json_str
         return transcript.text
 
-    #json_str = json.dumps(transcript, ensure_ascii=False)
-    #return json_str
-    return transcript
+    return transcript[0]
 
 def compute_checksum(data):
     hash_object = hashlib.sha256()
