@@ -24,7 +24,7 @@ export CHAT_GPT_KEY='my_key3'
 
 Then, you can run: `./transcript file1.mp3 file.mp3`
 
-be patient, it takes some time. The script will generate a set of transcripts, one json per mp3 input. 
+be patient, it takes some time. The script will generate a set of transcripts, one txt per mp3 input. 
 This will generate some costs, for a couple of files of 20M I got charged 0.15 USD. Be careful, always set a limit [here](https://platform.openai.com/account/billing/limits)
 
 ## Process JSON

@@ -161,6 +161,7 @@ cython_debug/
 *.mp3
 *.mp4
 *.json
+*.txt
 *.webm
  
 # sqlite
