@@ -10,9 +10,9 @@ def transcript(file_name):
     #transcript = openai.Audio.transcribe("whisper-1", audio_file)
     client = OpenAI()
     transcript = client.audio.transcriptions.create(model="whisper-1", file=audio_file)
-    json_str = json.dumps(transcript.text)
+    json_str = json.dumps(transcript.text, ensure_ascii=False)
     json_file = os.path.splitext(file_name)[0] + ".json"
-    with open(json_file, "w") as outfile:
+    with open(json_file, "w", encoding='utf8') as outfile:
        outfile.write(json_str)
 
 def main():
